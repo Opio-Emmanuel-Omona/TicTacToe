@@ -1,7 +1,6 @@
 package com.example.tictactoe
 
 import android.content.Context
-import android.os.AsyncTask
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Button
@@ -22,14 +21,12 @@ class DrawXO(context: Context) {
      * @param label the letter to be drawn on the button
      * @param myTurn to indicate the player making the move true for player false for AI
      */
-    fun drawLabel(button: Button, label: String, myTurn: Boolean) {
+    fun drawLabel(button: Button, label: String) {
         button.text = label
 
-        if (!myTurn) {
+        if (!Turns.myTurn) {
             button.startAnimation(shake)
-            MainActivity.getInstance().setMyTurn(true)
-        } else {
-            MainActivity.getInstance().setMyTurn(false)
         }
+        Turns.switchTurns()
     }
 }

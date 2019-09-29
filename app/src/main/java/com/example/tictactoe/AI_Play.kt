@@ -18,8 +18,7 @@ class AI_Play(context: Context, val AI_TEXT: String) {
         Thread.sleep(1000)
         val emptyButtonList = MainActivity.getInstance().getEmptyButtons()
         val aiButton = emptyButtonList.random()
-        MainActivity.getInstance().setMyTurn(false)
-        drawer.drawLabel(aiButton, AI_TEXT, MainActivity.getInstance().isMyTurn())
+        drawer.drawLabel(aiButton, AI_TEXT)
         aiButton.isEnabled = false
     }
 }
