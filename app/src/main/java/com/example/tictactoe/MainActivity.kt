@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.AsyncTask
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
@@ -16,7 +15,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var drawer: DrawXO
     private lateinit var aiPlay: AI_Play
     private lateinit var context: Context
-    private var myTurn: Boolean = false
 
     private lateinit var updateUIAsync: UpdateUIAsync
 
@@ -101,13 +99,13 @@ class MainActivity : AppCompatActivity() {
             my_letter_view.text = "X"
             ai_letter_view.text = "O"
             aiPlay = AI_Play(context, "O")
-            myTurn = true
+            Turns.myTurn = true
             Toast.makeText(applicationContext, "You Start", Toast.LENGTH_SHORT).show()
         } else {
             my_letter_view.text = "O"
             ai_letter_view.text = "X"
             aiPlay = AI_Play(context, "X")
-            myTurn = false
+            Turns.myTurn = false
             Toast.makeText(applicationContext, "AI Starts", Toast.LENGTH_LONG).show()
             ai_play()
 
@@ -122,24 +120,10 @@ class MainActivity : AppCompatActivity() {
      * @param button specifies the button that has been clicked
      */
     private fun buttonClicked(button: Button) {
-        if (isMyTurn()) {
+        if (Turns.myTurn) {
             updateUIAsync = UpdateUIAsync()
             updateUIAsync.execute(button)
         }
-    }
-
-    /**
-     * Getter for myTurn
-     */
-    fun isMyTurn(): Boolean{
-        return myTurn
-    }
-
-    /**
-     * Setter for myTurn
-     */
-    fun setMyTurn(value: Boolean) {
-        myTurn = value
     }
 
     /**
@@ -186,15 +170,14 @@ class MainActivity : AppCompatActivity() {
      */
     inner class UpdateUIAsync : AsyncTask<Button, Void, Button> () {
         override fun doInBackground(vararg params: Button?): Button? {
-            drawer.drawLabel(params[0]!!, MY_TEXT, isMyTurn())
+            drawer.drawLabel(params[0]!!, MY_TEXT)
             return params[0]
         }
 
         override fun onPostExecute(result: Button?) {
             super.onPostExecute(result)
-            Log.d("Dubug result", "$result")
             result!!.isEnabled = false
-            aiPlay.play()
+            ai_play()
         }
 
     }
