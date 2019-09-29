@@ -19,6 +19,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var updateUIAsync: UpdateUIAsync
 
     lateinit var buttonList: List<Button>
+    lateinit var game: Game
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,6 +76,10 @@ class MainActivity : AppCompatActivity() {
 
         drawer = DrawXO(context)
 
+        // initialise the game state to empty
+        var list = mutableListOf("", "", "", "", "", "", "", "", "")
+        game = Game(list)
+
         buttonList = arrayListOf(
             button_0, button_1, button_2, button_3, button_4, button_5, button_6, button_7, button_8
         )
@@ -100,13 +105,11 @@ class MainActivity : AppCompatActivity() {
             ai_letter_view.text = "O"
             aiPlay = AI_Play(context, "O")
             Turns.myTurn = true
-            Toast.makeText(applicationContext, "You Start", Toast.LENGTH_SHORT).show()
         } else {
             my_letter_view.text = "O"
             ai_letter_view.text = "X"
             aiPlay = AI_Play(context, "X")
             Turns.myTurn = false
-            Toast.makeText(applicationContext, "AI Starts", Toast.LENGTH_LONG).show()
             ai_play()
 
         }
@@ -149,6 +152,30 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
+     * Helper function to disable the buttons that have been cliecked and also when the game ends
+     *
+     * @param views list of buttons to disable
+     */
+    fun disableView(views: MutableList<Button>) {
+        for (i in views) {
+            i.isEnabled = false
+        }
+    }
+
+    /**
+     * Helper function to color the winning labels on the board
+     *
+     * @param array the list of buttons to color
+     * @param letter the label to draw on the buttons
+     */
+    fun drawWin(array: ArrayList<Int>, letter: String) {
+        for (i in array) {
+            buttonList[i].setTextColor(resources.getColor(R.color.yellow))
+            buttonList[i].text = letter
+        }
+    }
+
+    /**
      * companion object containing static references
      */
     companion object {
@@ -170,14 +197,24 @@ class MainActivity : AppCompatActivity() {
      */
     inner class UpdateUIAsync : AsyncTask<Button, Void, Button> () {
         override fun doInBackground(vararg params: Button?): Button? {
-            drawer.drawLabel(params[0]!!, MY_TEXT)
+            val index = params[0].toString().substringAfterLast("button_").substringBefore("}")
+            drawer.drawLabel(params[0]!!, index.toInt(), MY_TEXT)
             return params[0]
         }
 
         override fun onPostExecute(result: Button?) {
             super.onPostExecute(result)
-            result!!.isEnabled = false
-            ai_play()
+            disableView(mutableListOf(result!!))
+
+            //check win
+            if (instance.game.checkWin(MY_TEXT)){
+                Toast.makeText(context, "You Win", Toast.LENGTH_SHORT).show()
+                instance.disableView(instance.buttonList as MutableList<Button>)
+            } else if (instance.game.checkDraw()) {
+                Toast.makeText(context, "Draw", Toast.LENGTH_SHORT).show()
+            } else {
+                ai_play()
+            }
         }
 
     }
