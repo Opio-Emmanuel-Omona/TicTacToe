@@ -41,7 +41,7 @@
                 android:text="@string/me" />
 
             <Button
-                android:id="@+id/my_letter"
+                android:id="@+id/my_letter_view"
                 style="@style/text_medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -81,7 +81,7 @@
                 android:text="@string/ai" />
 
             <Button
-                android:id="@+id/ai_letter"
+                android:id="@+id/ai_letter_view"
                 style="@style/text_medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
