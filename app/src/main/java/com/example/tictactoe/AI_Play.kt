@@ -36,6 +36,8 @@ class AI_Play(private val context: Context, val AI_TEXT: String) {
         if (instance.game.checkWin(AI_TEXT)){
             Toast.makeText(context, "AI wins", Toast.LENGTH_SHORT).show()
             instance.disableView(instance.buttonList as MutableList<Button>)
+            instance.score.aiScore++
+            instance.score.updateScore()
         } else if (instance.game.checkDraw()) {
             Toast.makeText(context, "Draw", Toast.LENGTH_SHORT).show()
         }

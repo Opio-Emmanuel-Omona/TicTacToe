@@ -20,12 +20,14 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var buttonList: List<Button>
     lateinit var game: Game
+    lateinit var score: Score
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         initialiseObjects()
+        updateScore()
         chooseWhoStarts()
 
         button_0.setOnClickListener {
@@ -65,19 +67,33 @@ class MainActivity : AppCompatActivity() {
             buttonClicked(button_8)
         }
 
+        reset.setOnClickListener {
+            reset()
+        }
+
     }
 
     /**
-     * Initialises all objects
+     * update the UI with the latest score from shared preferences
+     */
+    fun updateScore() {
+        val scoreList = score.getScore()
+        my_score.text = scoreList[0].toString()
+        ai_score.text = scoreList[1].toString()
+    }
+
+    /**
+     * Initialises all objects and views
      */
     private fun initialiseObjects() {
         instance = this
         context = applicationContext
 
         drawer = DrawXO(context)
+        score = Score(context)
 
         // initialise the game state to empty
-        var list = mutableListOf("", "", "", "", "", "", "", "", "")
+        val list = mutableListOf("", "", "", "", "", "", "", "", "")
         game = Game(list)
 
         buttonList = arrayListOf(
@@ -152,7 +168,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * Helper function to disable the buttons that have been cliecked and also when the game ends
+     * Helper function to disable the buttons that have been clicked and also when the game ends
      *
      * @param views list of buttons to disable
      */
@@ -160,6 +176,32 @@ class MainActivity : AppCompatActivity() {
         for (i in views) {
             i.isEnabled = false
         }
+    }
+
+    /**
+     * helper function that enables a view for a new game
+     *
+     * @param views list of buttons to enable
+     */
+    private fun enableView(views: List<Button>) {
+        for (i in views) {
+            i.isEnabled = true
+            i.setTextColor(resources.getColor(R.color.white))
+            i.text = ""
+        }
+    }
+
+    /**
+     * to start a new game
+     */
+    fun reset() {
+        enableView(buttonList)
+
+        // new game state
+        val list = mutableListOf("", "", "", "", "", "", "", "", "")
+        game = Game(list)
+
+        chooseWhoStarts()
     }
 
     /**
@@ -210,6 +252,8 @@ class MainActivity : AppCompatActivity() {
             if (instance.game.checkWin(MY_TEXT)){
                 Toast.makeText(context, "You Win", Toast.LENGTH_SHORT).show()
                 instance.disableView(instance.buttonList as MutableList<Button>)
+                score.myScore++
+                score.updateScore()
             } else if (instance.game.checkDraw()) {
                 Toast.makeText(context, "Draw", Toast.LENGTH_SHORT).show()
             } else {
