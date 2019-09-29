@@ -1,13 +1,16 @@
 package com.example.tictactoe
 
 import android.content.Context
+import android.widget.Button
+import android.widget.Toast
 
 /**
  * class containing AI's logic for moves
  */
-class AI_Play(context: Context, val AI_TEXT: String) {
+class AI_Play(private val context: Context, val AI_TEXT: String) {
 
-    val drawer = DrawXO(context)
+    private val drawer = DrawXO(context)
+    private val instance = MainActivity.getInstance()
 
     /**
      * method that makes the move for the AI
@@ -18,7 +21,23 @@ class AI_Play(context: Context, val AI_TEXT: String) {
         Thread.sleep(1000)
         val emptyButtonList = MainActivity.getInstance().getEmptyButtons()
         val aiButton = emptyButtonList.random()
-        drawer.drawLabel(aiButton, AI_TEXT)
-        aiButton.isEnabled = false
+        val index = aiButton.toString().substringAfterLast("button_").substringBefore("}")
+        MainActivity.getInstance().disableView(mutableListOf(aiButton))
+        drawer.drawLabel(aiButton, index.toInt(),  AI_TEXT)
+
+        checkAiWin()
+    }
+
+    /**
+     * funcgion to check whether the Ai has won
+     * it is called every after the ai makes a move
+     */
+    private fun checkAiWin() {
+        if (instance.game.checkWin(AI_TEXT)){
+            Toast.makeText(context, "AI wins", Toast.LENGTH_SHORT).show()
+            instance.disableView(instance.buttonList as MutableList<Button>)
+        } else if (instance.game.checkDraw()) {
+            Toast.makeText(context, "Draw", Toast.LENGTH_SHORT).show()
+        }
     }
 }

@@ -12,6 +12,7 @@ import android.widget.Button
 class DrawXO(context: Context) {
 
     private val shake: Animation = AnimationUtils.loadAnimation(context, R.anim.shake)
+    private val instance = MainActivity.getInstance()
 
     /**
      * function that draws the text
@@ -21,12 +22,15 @@ class DrawXO(context: Context) {
      * @param label the letter to be drawn on the button
      * @param myTurn to indicate the player making the move true for player false for AI
      */
-    fun drawLabel(button: Button, label: String) {
+    fun drawLabel(button: Button, index: Int, label: String) {
         button.text = label
 
         if (!Turns.myTurn) {
             button.startAnimation(shake)
         }
+
+        instance.game.gameState[index] = label
+        instance.game.moveCount++
         Turns.switchTurns()
     }
 }
