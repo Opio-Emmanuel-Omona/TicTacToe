@@ -4,8 +4,7 @@
     <string name="colon">:</string>
     <string name="zero">0</string>
     <string name="me">ME</string>
-    <string name="x">X</string>
+    <string name="question">\?</string>
     <string name="ai">AI</string>
-    <string name="o">O</string>
     <string name="play_again">PLAY AGAIN</string>
 </resources>
