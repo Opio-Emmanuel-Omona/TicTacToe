@@ -12,7 +12,6 @@ class Game(var gameState: MutableList<String>) {
      */
     fun checkWin(letter: String): Boolean {
         if (anyIsTrue(checkCol(letter), checkRow(letter), checkDiagL(letter), checkDiagR(letter))) {
-            MainActivity.getInstance().drawWin(winList, letter)
             return true
         }
         return false

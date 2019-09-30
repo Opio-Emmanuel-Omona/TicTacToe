@@ -6,17 +6,19 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var MY_TEXT: String
+    lateinit var MY_TEXT: String
     private lateinit var drawer: DrawXO
     private lateinit var aiPlay: AI_Play
     private lateinit var context: Context
 
     private lateinit var updateUIAsync: UpdateUIAsync
+    private lateinit var dismissDialogAsync: DismissDialogAsync
 
     lateinit var buttonList: List<Button>
     lateinit var game: Game
@@ -73,6 +75,17 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    private fun displayDialog() {
+        val message =
+            if (Turns.myTurn) "You Start"
+            else "AI Starts"
+        dismissDialogAsync = DismissDialogAsync()
+        AlertDialog.Builder(this)
+            .setTitle(message)
+            .setPositiveButton(android.R.string.ok) { _, _ -> dismissDialogAsync.execute() }
+            .show()
+    }
+
     /**
      * update the UI with the latest score from shared preferences
      */
@@ -93,7 +106,7 @@ class MainActivity : AppCompatActivity() {
         score = Score(context)
 
         // initialise the game state to empty
-        val list = mutableListOf("", "", "", "", "", "", "", "", "")
+        val list = mutableListOf("0", "1", "2", "3", "4", "5", "6", "7", "8")
         game = Game(list)
 
         buttonList = arrayListOf(
@@ -126,9 +139,8 @@ class MainActivity : AppCompatActivity() {
             ai_letter_view.text = "X"
             aiPlay = AI_Play(context, "X")
             Turns.myTurn = false
-            ai_play()
-
         }
+        displayDialog()
     }
 
     /**
@@ -150,21 +162,6 @@ class MainActivity : AppCompatActivity() {
      */
     fun ai_play() {
         aiPlay.play()
-    }
-
-    /**
-     * function that loops through all the buttons in search for those that have not yet been played
-     *
-     * @return a list of button moves remaining
-     */
-    fun getEmptyButtons(): List<Button> {
-        var emptyButtonList: MutableList<Button> = mutableListOf()
-        for (button in buttonList) {
-            if (button.isEnabled) {
-                emptyButtonList.add(button)
-            }
-        }
-        return emptyButtonList
     }
 
     /**
@@ -198,7 +195,7 @@ class MainActivity : AppCompatActivity() {
         enableView(buttonList)
 
         // new game state
-        val list = mutableListOf("", "", "", "", "", "", "", "", "")
+        val list = mutableListOf("0", "1", "2", "3", "4", "5", "6", "7", "8")
         game = Game(list)
 
         chooseWhoStarts()
@@ -250,6 +247,7 @@ class MainActivity : AppCompatActivity() {
 
             //check win
             if (instance.game.checkWin(MY_TEXT)){
+                drawWin(game.winList, MY_TEXT)
                 Toast.makeText(context, "You Win", Toast.LENGTH_SHORT).show()
                 instance.disableView(instance.buttonList as MutableList<Button>)
                 score.myScore++
@@ -260,6 +258,19 @@ class MainActivity : AppCompatActivity() {
                 ai_play()
             }
         }
+    }
 
+    inner class DismissDialogAsync: AsyncTask<Void, Void, Boolean> () {
+        override fun doInBackground(vararg params: Void?): Boolean {
+            return Turns.myTurn
+        }
+
+        override fun onPostExecute(result: Boolean?) {
+            super.onPostExecute(result)
+
+            if (!result!!) {
+                ai_play()
+            }
+        }
     }
 }
