@@ -16,9 +16,6 @@ class Score(private var context: Context) {
         scorePref = context.getSharedPreferences(SCOREPREF, MODE_PRIVATE)
     }
 
-    /**
-     * store the updated score in shared preferences
-     */
     fun updateScore() {
         val scorePrefEditor = context.getSharedPreferences(SCOREPREF, MODE_PRIVATE).edit()
         scorePrefEditor.putInt("myScore", myScore)
@@ -27,9 +24,6 @@ class Score(private var context: Context) {
         MainActivity.getInstance().updateScore()
     }
 
-    /**
-     * get the current score from shared preferences
-     */
     fun getScore(): List<Int> {
         scorePref = context.getSharedPreferences(SCOREPREF, MODE_PRIVATE)
         myScore = scorePref.getInt("myScore", 0)

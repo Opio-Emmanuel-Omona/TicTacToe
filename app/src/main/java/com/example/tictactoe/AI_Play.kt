@@ -6,27 +6,17 @@ import android.os.AsyncTask
 import android.widget.Button
 import android.widget.Toast
 
-/**
- * class containing AI's logic for moves
- */
 class AI_Play(private val context: Context, val AI_TEXT: String) {
 
     private val drawer = DrawXO(context)
     private val instance = MainActivity.getInstance()
     private lateinit var progressDialogAsync: ProgressDialogAsync
 
-    /**
-     * method that executes the aysnc task to start the ai move
-     */
     fun play() {
         progressDialogAsync = ProgressDialogAsync(instance)
         progressDialogAsync.execute()
     }
 
-    /**
-     * function to check whether the Ai has won
-     * it is called every after the ai makes a move
-     */
     private fun checkAiWin() {
         if (instance.game.checkWin(AI_TEXT)){
             instance.drawWin(instance.game.winList, AI_TEXT)
@@ -39,12 +29,6 @@ class AI_Play(private val context: Context, val AI_TEXT: String) {
         }
     }
 
-    /**
-     * Minimax algorithm for AI move. (recursive)
-     *
-     * @param gameState the currentState of the game
-     * @param label the letter to check with the algorithm
-     */
     private fun minimax(gameState: MutableList<String>, label: String): Moves {
         var availMoves = emptySpots(gameState)
 
@@ -60,15 +44,12 @@ class AI_Play(private val context: Context, val AI_TEXT: String) {
             }
         }
 
-        // store for all the moves with terminal state
         var moves = mutableListOf<Moves>()
 
-        // loop through available moves
         for (i in availMoves) {
             val move = Moves(0, "")
             move.indx = gameState[i]
 
-            // set the empty spot to the current letter
             gameState[i] = label
 
             if (label == AI_TEXT){
@@ -80,15 +61,11 @@ class AI_Play(private val context: Context, val AI_TEXT: String) {
                 move.score = result.score
             }
 
-            //reset the gameState to the original state
             gameState[i] = move.indx
 
-            // add the move to the moves collection
             moves.add(move)
         }
 
-        // if it is the computer's turn loop over the moves
-        // and choose the move with the highest score
         var bestMove = 0
         if(label == AI_TEXT){
             var bestScore = -10000
@@ -99,7 +76,6 @@ class AI_Play(private val context: Context, val AI_TEXT: String) {
                 }
             }
         } else {
-            // else loop over the moves and choose the move with the lowest score
             var bestScore = 10000
             for (i in moves) {
                 if (i.score < bestScore) {
@@ -112,9 +88,6 @@ class AI_Play(private val context: Context, val AI_TEXT: String) {
         return moves[bestMove]
     }
 
-    /**
-     * Helper function to return all the Available moves
-     */
     private fun emptySpots(gameState: MutableList<String>): MutableList<Int> {
         val emptySpotList = mutableListOf<Int>()
         for (i in gameState) {
@@ -125,14 +98,8 @@ class AI_Play(private val context: Context, val AI_TEXT: String) {
         return emptySpotList
     }
 
-    /**
-     * Moves model class to provide the score and index
-     */
     inner class Moves(var score: Int, var indx: String)
 
-    /**
-     * Async inner class to display progress dialog while AI computes a move
-     */
     inner class ProgressDialogAsync(activity: MainActivity) : AsyncTask<Void, Void, Void>() {
         private var progressDialog: ProgressDialog = ProgressDialog(activity)
         private lateinit var aiMove: Moves
@@ -144,18 +111,12 @@ class AI_Play(private val context: Context, val AI_TEXT: String) {
             progressDialog.show()
         }
 
-        /**
-         * execute the minimax algorithm
-         */
         override fun doInBackground(vararg params: Void?): Void? {
             aiMove = minimax(instance.game.gameState, AI_TEXT)
 
             return null
         }
 
-        /**
-         * dismiss the progress bar after computing the move
-         */
         override fun onPostExecute(result: Void?) {
             super.onPostExecute(result)
 
@@ -172,6 +133,5 @@ class AI_Play(private val context: Context, val AI_TEXT: String) {
                 progressDialog.dismiss()
             }
         }
-
     }
 }
