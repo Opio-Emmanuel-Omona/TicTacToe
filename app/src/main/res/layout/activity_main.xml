@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="#000"
     android:padding="10dp"
-    tools:context=".MainActivity">
+    tools:context=".gamePlay.MainActivity">
 
     <TextView
         android:id="@+id/score_text"

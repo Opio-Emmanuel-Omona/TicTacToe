@@ -1,4 +1,4 @@
-package com.example.tictactoe
+package com.example.tictactoe.gamePlay
 
 import android.content.Context
 import android.os.AsyncTask
@@ -7,6 +7,9 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import com.example.tictactoe.R
+import com.example.tictactoe.gameLogic.Game
+import com.example.tictactoe.gameLogic.Turns
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -30,7 +33,7 @@ class MainActivity : AppCompatActivity() {
 
         initialiseObjects()
         updateScore()
-        chooseWhoStarts()
+        whoStarts()
 
         button_0.setOnClickListener {
             buttonClicked(button_0)
@@ -107,9 +110,8 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
-    private fun chooseWhoStarts() {
-        val source = "XO"
-        MY_TEXT = source.random().toString()
+    private fun whoStarts() {
+        MY_TEXT = Turns.chooseWhoStarts()
         setLetters()
     }
 
@@ -159,7 +161,7 @@ class MainActivity : AppCompatActivity() {
         val list = mutableListOf("0", "1", "2", "3", "4", "5", "6", "7", "8")
         game = Game(list)
 
-        chooseWhoStarts()
+        whoStarts()
     }
 
     fun drawWin(array: ArrayList<Int>, letter: String) {
@@ -167,6 +169,8 @@ class MainActivity : AppCompatActivity() {
             buttonList[i].setTextColor(resources.getColor(R.color.yellow))
             buttonList[i].text = letter
         }
+
+        disableView(buttonList as MutableList<Button>)
     }
 
     companion object {

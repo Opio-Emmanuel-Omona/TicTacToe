@@ -1,4 +1,4 @@
-package com.example.tictactoe
+package com.example.tictactoe.gameLogic
 
 class Game(var gameState: MutableList<String>) {
 

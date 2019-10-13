@@ -1,4 +1,4 @@
-package com.example.tictactoe
+package com.example.tictactoe.gamePlay
 
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
