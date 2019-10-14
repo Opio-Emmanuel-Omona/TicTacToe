@@ -19,8 +19,6 @@ class AI_Play(private val context: Context, val AI_TEXT: String) {
         progressDialogAsync.execute()
     }
 
-
-
     inner class ProgressDialogAsync(activity: MainActivity) : AsyncTask<Void, Void, Void>() {
         private var progressDialog: ProgressDialog = ProgressDialog(activity)
         private lateinit var aiMove: AI_Logic.Moves
@@ -60,6 +58,7 @@ class AI_Play(private val context: Context, val AI_TEXT: String) {
             if (progressDialog.isShowing) {
                 progressDialog.dismiss()
             }
+
         }
     }
 }

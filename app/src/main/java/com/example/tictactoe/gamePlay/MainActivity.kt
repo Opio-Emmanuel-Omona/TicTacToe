@@ -6,7 +6,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.Toast
+import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AlertDialog
+import androidx.test.espresso.idling.CountingIdlingResource
 import com.example.tictactoe.R
 import com.example.tictactoe.gameLogic.Game
 import com.example.tictactoe.gameLogic.Turns
@@ -22,6 +24,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var updateUIAsync: UpdateUIAsync
     private lateinit var dismissDialogAsync: DismissDialogAsync
+    private lateinit var idlingResource: CountingIdlingResource
 
     lateinit var buttonList: List<Button>
     lateinit var game: Game
@@ -102,6 +105,8 @@ class MainActivity : AppCompatActivity() {
         drawer = DrawXO(context)
         score = Score(context)
 
+        idlingResource = CountingIdlingResource("AI Idling Resource")
+
         val list = mutableListOf("0", "1", "2", "3", "4", "5", "6", "7", "8")
         game = Game(list)
 
@@ -138,7 +143,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun ai_play() {
+        idlingResource.increment()
         aiPlay.play()
+        idlingResource.decrement()
     }
 
     fun disableView(views: MutableList<Button>) {
@@ -171,6 +178,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         disableView(buttonList as MutableList<Button>)
+    }
+
+    @VisibleForTesting
+    fun getCountingIdlingResource(): CountingIdlingResource {
+        return idlingResource
     }
 
     companion object {

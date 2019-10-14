@@ -1,6 +1,10 @@
 # TicTacToe
 A simple game of tic tac toe where a user versus the computer.
 
+[![Build Status](https://travis-ci.org/Opio-Emmanuel-Omona/TicTacToe.svg?branch=develop)](https://travis-ci.org/Opio-Emmanuel-Omona/TicTacToe)
+
+[![codecov](https://codecov.io/gh/Opio-Emmanuel-Omona/TicTacToe/branch/develop/graph/badge.svg)](https://codecov.io/gh/Opio-Emmanuel-Omona/TicTacToe)
+
 The Computer uses Minimax Algorithm to ensure it never loses.
 It assigns values to each move in the prediction and recursively predicts the next moves until there's no chance of the opponent winnnig or if there's a guarantee of it winning, then it makes the move based on the highest score assigned.
 
