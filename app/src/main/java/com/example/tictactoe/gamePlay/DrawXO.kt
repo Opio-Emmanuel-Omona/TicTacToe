@@ -1,27 +1,19 @@
-package com.example.tictactoe
+package com.example.tictactoe.gamePlay
 
 import android.content.Context
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Button
+import com.example.tictactoe.R
+import com.example.tictactoe.gameLogic.Turns
 
-/**
- * class that draws the letters on the buttons
- * and also handles the animation
- */
 class DrawXO(context: Context) {
 
-    private val shake: Animation = AnimationUtils.loadAnimation(context, R.anim.shake)
+    private val shake: Animation = AnimationUtils.loadAnimation(context,
+        R.anim.shake
+    )
     private val instance = MainActivity.getInstance()
 
-    /**
-     * function that draws the text
-     * also animates move only when AI plays.
-     *
-     * @param button the button to draw the letter on
-     * @param label the letter to be drawn on the button
-     * @param myTurn to indicate the player making the move true for player false for AI
-     */
     fun drawLabel(button: Button, index: Int, label: String) {
         button.text = label
 
